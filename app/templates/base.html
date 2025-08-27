@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crop Reco — Real vs Synthetic</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div class="brand">🌱 Crop Reco</div>
+        <div>
+          <a href="{{ url_for('index') }}">Predict</a>
+          <a href="{{ url_for('compare') }}">Compare</a>
+          <a href="https://kaggle.com" target="_blank">Kaggle</a>
+        </div>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <div class="footer">Built with ❤️ for learning. Ranges & server validation included.</div>
+    </div>
+  </body>
+</html>

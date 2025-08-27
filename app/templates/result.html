@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Prediction Result</h2>
+  <div class="grid">
+    <div>
+      <h3>Inputs</h3>
+      <table class="table">
+        <tbody>
+          {% for k,v in values.items() %}
+          <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Models</h3>
+      <div class="item" style="margin-bottom:10px;">
+        <div>Real-trained: <strong>{{ outputs['real']['label'] }}</strong></div>
+        <div class="progress" title="confidence">
+          <div style="width: {{ (outputs['real']['proba']*100)|round(1) }}%"></div>
+        </div>
+        <div class="small">{{ (outputs['real']['proba']*100)|round(1) }}%</div>
+      </div>
+      <div class="item">
+        <div>Synthetic-trained: <strong>{{ outputs['synth']['label'] }}</strong></div>
+        <div class="progress" title="confidence">
+          <div style="width: {{ (outputs['synth']['proba']*100)|round(1) }}%"></div>
+        </div>
+        <div class="small">{{ (outputs['synth']['proba']*100)|round(1) }}%</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:12px;">
+    <a class="btn btn-ghost" href="{{ url_for('index') }}">⬅ Back</a>
+    <a class="btn btn-primary" href="{{ url_for('compare') }}">Compare Accuracy</a>
+  </div>
+</div>
+{% endblock %}

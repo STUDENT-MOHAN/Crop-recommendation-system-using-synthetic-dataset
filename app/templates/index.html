@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero">
+  <div>
+    <h1>Crop Recommendation using synthetic dataset</h1>
+    <p class="small">Enter realistic values only. Inputs are constrained to dataset-like ranges.</p>
+    <div class="kpi">
+      <div class="item">
+        <div class="small">Models</div>
+        <div><span class="badge">Real-trained</span> &nbsp; <span class="badge">Synthetic-trained</span></div>
+      </div>
+      <div class="item">
+        <div class="small">Validation</div>
+        <div>Client + Server Range Checks</div>
+      </div>
+      <div class="item">
+        <div class="small">Compare</div>
+        <div>Accuracy & F1 on Real Test</div>
+      </div>
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<div class="card">
+  <form action="{{ url_for('predict') }}" method="POST">
+    <div class="grid">
+      {% for feat in features %}
+      <div class="input">
+        <label for="{{ feat }}">{{ feat|capitalize }}
+          <span class="helper">
+            ({{ ranges[feat][0] }} – {{ ranges[feat][1] }}{% if feat != 'ph' %}{% endif %})
+          </span>
+        </label>
+        <input id="{{ feat }}" name="{{ feat }}" type="number" step="any"
+               min="{{ ranges[feat][0] }}" max="{{ ranges[feat][1] }}" required>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="display:flex; gap:10px; margin-top:8px;">
+      <button class="btn btn-primary" type="submit">Predict</button>
+      <a class="btn btn-ghost" href="{{ url_for('compare') }}">Compare Accuracy</a>
+    </div>
+  </form>
+</div>
+
+<div style="margin-top:18px;" class="card">
+  <h3>Input Guidelines</h3>
+  <table class="table">
+    <thead><tr><th>Feature</th><th>Range</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>N</td><td>{{ ranges['N'][0] }}–{{ ranges['N'][1] }}</td><td>Nitrogen content in soil</td></tr>
+      <tr><td>P</td><td>{{ ranges['P'][0] }}–{{ ranges['P'][1] }}</td><td>Phosphorus content</td></tr>
+      <tr><td>K</td><td>{{ ranges['K'][0] }}–{{ ranges['K'][1] }}</td><td>Potassium content</td></tr>
+      <tr><td>temperature (°C)</td><td>{{ ranges['temperature'][0] }}–{{ ranges['temperature'][1] }}</td><td>Ambient temperature</td></tr>
+      <tr><td>humidity (%)</td><td>{{ ranges['humidity'][0] }}–{{ ranges['humidity'][1] }}</td><td>Relative humidity</td></tr>
+      <tr><td>ph</td><td>{{ ranges['ph'][0] }}–{{ ranges['ph'][1] }}</td><td>Soil pH</td></tr>
+      <tr><td>rainfall (mm)</td><td>{{ ranges['rainfall'][0] }}–{{ ranges['rainfall'][1] }}</td><td>Monthly rainfall</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

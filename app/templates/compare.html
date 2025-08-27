@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Real vs Synthetic — Accuracy & F1 (on Real Test Set)</h2>
+  <p class="small">Click Evaluate to compute metrics on the held-out real test split saved during training.</p>
+  <div style="display:flex; gap:10px; margin-bottom:12px;">
+    <button id="btnEval" class="btn btn-primary">Evaluate</button>
+  </div>
+  <canvas id="accChart" height="100"></canvas>
+  <div style="height:10px"></div>
+  <canvas id="f1Chart" height="100"></canvas>
+</div>
+
+<script>
+const accCtx = document.getElementById('accChart').getContext('2d');
+const f1Ctx = document.getElementById('f1Chart').getContext('2d');
+let accChart, f1Chart;
+
+function renderCharts(payload){
+  const realAcc = payload.results.real.accuracy;
+  const synthAcc = payload.results.synth.accuracy;
+  const realF1 = payload.results.real.f1;
+  const synthF1 = payload.results.synth.f1;
+
+  if(accChart){ accChart.destroy(); }
+  if(f1Chart){ f1Chart.destroy(); }
+
+  accChart = new Chart(accCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Real Model', 'Synthetic Model'],
+      datasets: [{
+        label: 'Accuracy',
+        data: [realAcc, synthAcc],
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, max: 1 } }
+    }
+  });
+
+  f1Chart = new Chart(f1Ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Real Model', 'Synthetic Model'],
+      datasets: [{
+        label: 'F1 Score (weighted)',
+        data: [realF1, synthF1],
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, max: 1 } }
+    }
+  });
+}
+
+document.getElementById('btnEval').addEventListener('click', async () => {
+  const r = await fetch('{{ url_for("metrics") }}');
+  const payload = await r.json();
+  if(payload.error){
+    alert(payload.error);
+    return;
+  }
+  renderCharts(payload);
+});
+</script>
+{% endblock %}
