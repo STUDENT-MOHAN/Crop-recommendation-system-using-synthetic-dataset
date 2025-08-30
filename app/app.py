@@ -145,6 +145,5 @@ def metrics():
     return jsonify(payload)
 
 if __name__ == "__main__":
-    # Ensure models dir exists
     os.makedirs(MODELS_DIR, exist_ok=True)
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
